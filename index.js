@@ -9,7 +9,7 @@ export const links = {
   skinsLink: "http://trsstest.crystalcloud.xyz/game-dev/TRSSDatabase/skins.php",
 };
 
-export const actions = ["login"];
+export const actions = {login: "login", getUserById: "get_user_by_id"}
 
 export const trssErrors = {
   0: "Invalid user or password",
@@ -25,6 +25,8 @@ export const trssErrors = {
 
 /**
  * @typedef {(string)} token
+ * @typedef {(string[][])} skin
+ * @typeded {string()} encodedString
  */
 
 export class TrssError extends Error {
@@ -113,3 +115,25 @@ export async function login(login, password) {
   }
   return res;
 }
+
+/*
+ * @param {number} id
+ * @rerurns {{id: number, login: string, skin: encodedSkin, primary_color: string, secondary_color: string}}
+*/
+export async function getUserById(id) {
+  id = Math.floor(id);
+  if (isNaN(id)) {
+    throw new Error('"id" is not a number');
+  }
+  const req = await makeRequest(links.usersLink, actions.getUserById, {
+    id,
+  });
+  const res = JSON.parse(req);
+  if ("error_code" in res) {
+    throw new TrssError(res.error_code);
+  }
+  return res;
+}
+
+//TODO: write a function
+export async function getUserByToken(token) {}
