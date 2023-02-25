@@ -9,8 +9,6 @@ npm i node-trss-api
 
 ## Example (get views)
 ```js
-const randint = (min, max) => Math.floor(Math.random() * (max - min) + min);
-
 const num = 42;
 console.log(await getSkinById(num).views) // Outputs amount of views
 ```
