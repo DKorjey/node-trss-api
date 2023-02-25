@@ -4,44 +4,6 @@ import _ from "lodash";
 const { chunk } = _;
 import chroma from "chroma-js";
 
-/**
- * @typedef {Object} SkinInfo
- * @property {number} author_id
- * @property {number} id
- * @property {number} likes
- * @property {string} primary_color
- * @property {string} secondary_color
- * @property {string} skin
- * @property {string} skin_name
- * @property {number} views
- */
-
-/**
- * @typedef {Object} UserInfo
- * @property {number} id
- * @property {string} login
- * @property {string} skin
- * @property {string} primary_color
- * @property {string} secondary_color
- */
-
-/**
- * @typedef {Object} UserInfoByToken
- * @property {number} id
- * @property {string} login
- * @property {string} skin
- * @property {string} private_token
- * @property {string} primary_color
- * @property {string} secondary_color
- */
-
-/**
- * @typedef {Object} ChangedSkin
- * @property {string} skin
- * @property {string} primary_color
- * @property {string} secondary_color
- */
-
 export const links = {
   mainLink: "http://trsstest.crystalcloud.xyz/game-dev/TRSSDatabase/",
   usersLink: "http://trsstest.crystalcloud.xyz/game-dev/TRSSDatabase/users.php",
@@ -89,12 +51,7 @@ Object.freeze(trssErrors);
 
 export class TrssError extends Error {
   name = "TrssError";
-  /**@type {number} */
   code;
-  /**
-   * @constructor
-   * @param {number} errorCode
-   */
   constructor(errorCode) {
     super(trssErrors[errorCode]);
     this.code = errorCode;
@@ -130,11 +87,6 @@ function isJson(item) {
   return false;
 }
 
-/**
- * @param {string} skin
- * @param {boolean} twoDimensional
- * @returns {string[][]}
- */
 export function decodeSkin(skin, twoDimensional = true) {
   const bufdata = Buffer.from(skin.replace("trSkin1", "").trim(), "base64");
   const binData = new Uint8Array(bufdata);
@@ -145,10 +97,6 @@ export function decodeSkin(skin, twoDimensional = true) {
   return twoDimensional ? chunk(arr, 20) : arr;
 }
 
-/**
- * @param {any} skin
- * @returns {boolean}
- */
 export function isDecodedSkin(skin) {
   return (
     Array.isArray(skin) &&
@@ -164,10 +112,6 @@ export function isDecodedSkin(skin) {
   );
 }
 
-/**
- * @param {string} skin
- * @returns {string[][]}
- */
 export function encodeSkin(skin) {
   skin.push("");
   return (
@@ -178,21 +122,10 @@ export function encodeSkin(skin) {
   );
 }
 
-/**
- * @param {any} skin
- * @returns {boolean}
- */
 export function isEncodedSkin(skin) {
   return isDecodedSkin(decodeSkin(skin));
 }
 
-/**
- * @async
- * @param {string} link
- * @param {string} action
- * @param {Object} params
- * @returns {Promise<string>}
- */
 async function makeRequest(link, action, params) {
   const data = new URLSearchParams();
   data.append("action", action);
@@ -209,12 +142,6 @@ async function makeRequest(link, action, params) {
 
 // USERS.PHP
 
-/**
- * @async
- * @param {string} login
- * @param {string} password
- * @returns {Promise<string>}
- */
 export async function login(login, password) {
   if (typeof login != "string") {
     throw new TypeError('"login" is not string');
@@ -232,11 +159,6 @@ export async function login(login, password) {
   return res;
 }
 
-/**
- * @async
- * @param {number} id
- * @returns {Promise<UserInfo>}
- */
 export async function getUserById(id) {
   id = Math.floor(id);
   if (isNaN(id)) {
@@ -253,11 +175,6 @@ export async function getUserById(id) {
   return res;
 }
 
-/**
- * @async
- * @param {string} token
- * @returns {Promise<UserInfoByToken>}
- */
 export async function getUserByToken(token) {
   if (typeof token != "string") {
     throw new TypeError('"token" is not a string');
@@ -271,14 +188,6 @@ export async function getUserByToken(token) {
   return res;
 }
 
-/**
- * @async
- * @param {string} token
- * @param {string} newSkinEncoded
- * @param {string} primaryColor
- * @param {string} secondaryColor
- * @returns {Promise<ChangedSkin>}
- */
 export async function changeUserSkin(
   token,
   newSkinEncoded,
@@ -307,12 +216,6 @@ export async function changeUserSkin(
   return res;
 }
 
-/**
- * @async
- * @param {string} token
- * @param {number} skinId
- * @returns {Promise<number>} 1 if like is added else 0
- */
 export async function toggleLike(token, skinId) {
   if (typeof token != "string") {
     throw new TypeError('"token" is not a string');
@@ -331,12 +234,6 @@ export async function toggleLike(token, skinId) {
   return res;
 }
 
-/**
- * @async
- * @param {number} token
- * @param {number} skinId
- * @returns {Promise<number>} 1 if user viewed the skin else 0
- */
 export async function registerView(token, skinId) {
   if (typeof token != "string") {
     throw new TypeError('"token" is not a string');
