@@ -252,12 +252,6 @@ export async function registerView(token, skinId) {
   return res;
 }
 
-/**
- * @async
- * @param {number} userId
- * @param {number} skinId
- * @returns {Promise<number>} 1 if user has liked
- */
 export async function getLike(userId, skinId) {
   userId = Math.floor(userId);
   if (isNaN(userId)) {
@@ -276,15 +270,6 @@ export async function getLike(userId, skinId) {
 
 // SKINS.PHP
 
-/**
- * @async
- * @param {string} token
- * @param {string} encodedSkin
- * @param {string} skinName
- * @param {string} primaryColor
- * @param {string} secondaryColor
- * @returns {Promise<number>} 1 if the skin is written to the database else error
- */
 export async function uploadSkin(
   token,
   encodedSkin,
@@ -316,12 +301,6 @@ export async function uploadSkin(
   return res;
 }
 
-/**
- * @async
- * @param {string} token
- * @param {number} skinId
- * @returns {Promise<number>} 1 if the skin is removed from the database
- */
 export async function removeSkin(token, skinId) {
   if (typeof token != "string") {
     throw new TypeError('"token" is not a string');
@@ -340,11 +319,6 @@ export async function removeSkin(token, skinId) {
   return res;
 }
 
-/**
- * @async
- * @param {number} skinId
- * @returns {Promise<SkinInfo>} skin information
- */
 export async function getSkinById(skinId) {
   skinId = Math.floor(skinId);
   if (isNaN(skinId)) {
@@ -361,12 +335,19 @@ export async function getSkinById(skinId) {
   return res;
 }
 
-/**
- * @async
- * @param {number} fromId
- * @param {number} amount
- * @returns {Promise<SkinInfo[]>}
- */
+export async function getSelfLike(skinId) {
+  skinId = Math.floor(skinId);
+  if (isNaN(skinId)) {
+    throw new TypeError('"skinId" is not a number');
+  }
+  const skinData = await getSkinById(skinId)
+  const res = getLike(skinData.author_id, skinId);
+  if ("error_code" in skinData) {
+    throw new TrssError(skinData.error_code);
+  }
+  return !!res;
+}
+
 export async function getSkinsById(fromId, amount) {
   fromId = Math.floor(fromId);
   if (isNaN(fromId)) {
@@ -388,12 +369,6 @@ export async function getSkinsById(fromId, amount) {
   return res;
 }
 
-/**
- * @async
- * @param {number} fromId
- * @param {number} amount
- * @returns {Promise<SkinInfo[]>}
- */
 export async function getRecentSkins(fromId, amount) {
   fromId = Math.floor(fromId);
   if (isNaN(fromId)) {
@@ -415,13 +390,6 @@ export async function getRecentSkins(fromId, amount) {
   return res;
 }
 
-/**
- * @async
- * @param {number} authorId
- * @param {number} fromId
- * @param {number} amount
- * @returns {Promise<SkinInfo[]>}
- */
 export async function getSkinsByAuthorId(authorId, fromId, amount) {
   authorId = Math.floor(authorId);
   if (isNaN(authorId)) {
@@ -448,12 +416,7 @@ export async function getSkinsByAuthorId(authorId, fromId, amount) {
   return res;
 }
 
-/**
- * @async
- * @param {number} fromId
- * @param {number} amount
- * @returns {Promise<SkinInfo[]>}
- */
+
 export async function getSkinsByLikes(fromId, amount) {
   fromId = Math.floor(fromId);
   if (isNaN(fromId)) {
@@ -475,12 +438,6 @@ export async function getSkinsByLikes(fromId, amount) {
   return res;
 }
 
-/**
- * @async
- * @param {number} fromId
- * @param {number} amount
- * @returns {Promise<SkinInfo[]>}
- */
 export async function getSkinsByViews(fromId, amount) {
   fromId = Math.floor(fromId);
   if (isNaN(fromId)) {
@@ -502,11 +459,6 @@ export async function getSkinsByViews(fromId, amount) {
   return res;
 }
 
-/**
- * @async
- * @param {number} skinId
- * @returns {Promise<number>}
- */
 export async function getLikes(skinId) {
   skinId = Math.floor(skinId);
   if (isNaN(skinId)) {
@@ -519,11 +471,6 @@ export async function getLikes(skinId) {
   return res;
 }
 
-/**
- * @async
- * @param {number} skinId
- * @returns {Promise<number>}
- */
 export async function getViews(skinId) {
   skinId = Math.floor(skinId);
   if (isNaN(skinId)) {
