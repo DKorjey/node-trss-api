@@ -3,7 +3,7 @@
 
 import * as readline from "node:readline/promises";
 import { stdin as input, stdout as output, exit } from "process";
-import { getLike, getSkinById } from "../index.js"; // P.S. In real code use "node-trss-api" instead of "../index.js"
+import { getSkinById } from "../index.js"; // P.S. In real code use "node-trss-api" instead of "../index.js"
 
 function fromUpper(str) {
   return str[0].toUpperCase() + str.slice(1).toLowerCase();

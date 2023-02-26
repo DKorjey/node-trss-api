@@ -113,7 +113,6 @@ export function isDecodedSkin(skin) {
 }
 
 export function encodeSkin(skin) {
-  skin.push("");
   return (
     "trSkin1" +
     deflateRawSync(
@@ -142,7 +141,7 @@ async function makeRequest(link, action, params) {
 
 // USERS.PHP
 
-export async function login(login, password) {
+export async function logIn(login, password) {
   if (typeof login != "string") {
     throw new TypeError('"login" is not string');
   }
@@ -231,7 +230,7 @@ export async function toggleLike(token, skinId) {
   if (isJson(res) && "error_code" in JSON.parse(res)) {
     throw new TrssError(JSON.parse(res).error_code);
   }
-  return res;
+  return !!res;
 }
 
 export async function registerView(token, skinId) {
@@ -249,7 +248,7 @@ export async function registerView(token, skinId) {
   if (isJson(res) && "error_code" in JSON.parse(res)) {
     throw new TrssError(JSON.parse(res).error_code);
   }
-  return res;
+  return !!res;
 }
 
 export async function getLike(userId, skinId) {
@@ -265,7 +264,7 @@ export async function getLike(userId, skinId) {
   if (isJson(res) && "error_code" in JSON.parse(res)) {
     throw new TrssError(JSON.parse(res).error_code);
   }
-  return res;
+  return !!res;
 }
 
 // SKINS.PHP
@@ -298,7 +297,7 @@ export async function uploadSkin(
   if (isJson(res) && "error_code" in JSON.parse(res)) {
     throw new TrssError(JSON.parse(res).error_code);
   }
-  return res;
+  return !!res;
 }
 
 export async function removeSkin(token, skinId) {
@@ -316,7 +315,7 @@ export async function removeSkin(token, skinId) {
   if (isJson(res) && "error_code" in JSON.parse(res)) {
     throw new TrssError(JSON.parse(res).error_code);
   }
-  return res;
+  return !!res;
 }
 
 export async function getSkinById(skinId) {
@@ -333,19 +332,6 @@ export async function getSkinById(skinId) {
     throw new TrssError(res.error_code);
   }
   return res;
-}
-
-export async function getSelfLike(skinId) {
-  skinId = Math.floor(skinId);
-  if (isNaN(skinId)) {
-    throw new TypeError('"skinId" is not a number');
-  }
-  const skinData = await getSkinById(skinId)
-  const res = getLike(skinData.author_id, skinId);
-  if ("error_code" in skinData) {
-    throw new TrssError(skinData.error_code);
-  }
-  return !!res;
 }
 
 export async function getSkinsById(fromId, amount) {
@@ -416,7 +402,6 @@ export async function getSkinsByAuthorId(authorId, fromId, amount) {
   return res;
 }
 
-
 export async function getSkinsByLikes(fromId, amount) {
   fromId = Math.floor(fromId);
   if (isNaN(fromId)) {
@@ -464,7 +449,9 @@ export async function getLikes(skinId) {
   if (isNaN(skinId)) {
     throw new TypeError('"skinId" is not a number');
   }
-  const res = await makeRequest(links.skinsLink, actions.getLikes);
+  const res = await makeRequest(links.skinsLink, actions.getLikes, {
+    skin_id: skinId,
+  });
   if (isJson(res) && "error_code" in JSON.parse(res)) {
     throw new TrssError(JSON.parse(res).error_code);
   }
@@ -476,7 +463,9 @@ export async function getViews(skinId) {
   if (isNaN(skinId)) {
     throw new TypeError('"skinId" is not a number');
   }
-  const res = await makeRequest(links.skinsLink, actions.getViews);
+  const res = await makeRequest(links.skinsLink, actions.getViews, {
+    skin_id: skinId,
+  });
   if (isJson(res) && "error_code" in JSON.parse(res)) {
     throw new TrssError(JSON.parse(res).error_code);
   }
